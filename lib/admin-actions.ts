@@ -49,7 +49,7 @@ export async function updateBooking(bookingId: string, formData: {
       return { success: false, error: 'Booking not found' }
     }
 
-    // Check for duplicate flat number (except 000 for Mandal Aarti)
+    // Check for duplicate flat number on the same date (except 000 for Mandal Aarti)
     if (formData.flat !== '000') {
       const existingBooking = await prisma.booking.findFirst({
         where: {
@@ -64,7 +64,7 @@ export async function updateBooking(bookingId: string, formData: {
       })
 
       if (existingBooking) {
-        return { success: false, error: `Flat ${formData.flat} is already booked for this date. Use 000 for Mandal Aarti.` }
+        return { success: false, error: `Flat ${formData.flat} is already booked for ${new Date(currentBooking.slot.date).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}. Use 000 for Mandal Aarti.` }
       }
     }
 

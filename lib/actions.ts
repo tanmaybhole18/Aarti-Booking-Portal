@@ -87,18 +87,20 @@ export async function bookSlot(
       return { success: false, error: 'Slot Full' }
     }
 
-    // Check for duplicate flat number (except 000 for Mandal Aarti)
-    const existingBooking = await prisma.booking.findFirst({
-      where: {
-        flat: formData.flat,
-        slot: {
-          date: slot.date
+    // Check for duplicate flat number on the same date (except 000 for Mandal Aarti)
+    if (formData.flat !== '000') {
+      const existingBooking = await prisma.booking.findFirst({
+        where: {
+          flat: formData.flat,
+          slot: {
+            date: slot.date
+          }
         }
-      }
-    })
+      })
 
-    if (existingBooking && formData.flat !== '000') {
-      return { success: false, error: `Flat ${formData.flat} is already booked for this date. Use 000 for Mandal Aarti.` }
+      if (existingBooking) {
+        return { success: false, error: `Flat ${formData.flat} is already booked for ${new Date(slot.date).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}. Use 000 for Mandal Aarti.` }
+      }
     }
 
     // Create booking

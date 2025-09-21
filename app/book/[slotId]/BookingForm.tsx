@@ -13,6 +13,8 @@ export default function BookingForm({ slotId }: BookingFormProps) {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
   const [phone, setPhone] = useState('')
+  const [flat, setFlat] = useState('')
+  const [flatError, setFlatError] = useState('')
   const router = useRouter()
 
   const formatPhoneNumber = (value: string): string => {
@@ -35,6 +37,19 @@ export default function BookingForm({ slotId }: BookingFormProps) {
     setPhone(formatted)
   }
 
+  const handleFlatChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setFlat(value)
+    setFlatError('')
+    
+    // Basic validation
+    if (value.trim() === '') {
+      setFlatError('Flat number is required')
+    } else if (value.trim().length < 2) {
+      setFlatError('Please enter a valid flat number')
+    }
+  }
+
   const handleSubmit = async (formData: FormData) => {
     setIsSubmitting(true)
     setError('')
@@ -55,6 +70,14 @@ export default function BookingForm({ slotId }: BookingFormProps) {
       // Basic validation
       if (!name.trim() || !flat.trim() || !phone.trim()) {
         setError('Please fill in all fields')
+        setIsSubmitting(false)
+        return
+      }
+
+      // Flat number validation
+      if (flat.trim().length < 2) {
+        setFlatError('Please enter a valid flat number')
+        setError('Please enter a valid flat number')
         setIsSubmitting(false)
         return
       }
@@ -149,16 +172,39 @@ export default function BookingForm({ slotId }: BookingFormProps) {
               type="text"
               id="flat"
               name="flat"
+              value={flat}
+              onChange={handleFlatChange}
               required
-              className="w-full px-4 py-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-all duration-200 bg-gray-50 focus:bg-white text-gray-900 placeholder-gray-500"
-              placeholder="e.g., A-101, B-205"
+              className={`w-full px-4 py-4 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-all duration-200 bg-gray-50 focus:bg-white text-gray-900 placeholder-gray-500 ${
+                flatError 
+                  ? 'border-red-400 bg-red-50' 
+                  : flat.length >= 2 
+                    ? 'border-green-400 bg-green-50' 
+                    : 'border-gray-200'
+              }`}
+              placeholder="e.g., A-101, B-205, 000 (Mandal Aarti)"
             />
             <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-              <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-              </svg>
+              {flat.length >= 2 && !flatError ? (
+                <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              ) : flatError ? (
+                <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+              )}
             </div>
           </div>
+          {flatError && (
+            <p className="text-sm text-red-600 mt-2">
+              {flatError}
+            </p>
+          )}
         </div>
 
         <div>
@@ -206,9 +252,9 @@ export default function BookingForm({ slotId }: BookingFormProps) {
       <div className="pt-6">
         <button
           type="submit"
-          disabled={isSubmitting || phone.length !== 10}
+          disabled={isSubmitting || phone.length !== 10 || flat.length < 2 || flatError !== ''}
           className={`group relative w-full py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-300 ${
-            isSubmitting || phone.length !== 10
+            isSubmitting || phone.length !== 10 || flat.length < 2 || flatError !== ''
               ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
               : 'bg-gradient-to-r from-orange-600 to-red-600 text-white hover:from-orange-700 hover:to-red-700 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]'
           }`}
@@ -227,9 +273,12 @@ export default function BookingForm({ slotId }: BookingFormProps) {
             </div>
           )}
         </button>
-        {phone.length !== 10 && (
+        {(phone.length !== 10 || flat.length < 2 || flatError !== '') && (
           <p className="text-sm text-gray-500 mt-2 text-center">
-            Complete phone number to enable booking
+            {phone.length !== 10 ? 'Complete phone number' : 
+             flat.length < 2 ? 'Enter valid flat number' : 
+             flatError ? 'Fix flat number error' : 
+             'Complete all fields'} to enable booking
           </p>
         )}
       </div>
@@ -244,6 +293,7 @@ export default function BookingForm({ slotId }: BookingFormProps) {
         <div className="text-sm text-gray-600 space-y-1">
           <p>• By booking this slot, you agree to attend the Aarti session at the scheduled time</p>
           <p>• This is a first-come-first-serve booking system</p>
+          <p>• <strong>One flat can only book one aarti</strong> (except 000 for Mandal Aarti)</p>
           <p>• Please arrive 10 minutes before the scheduled time</p>
         </div>
       </div>
