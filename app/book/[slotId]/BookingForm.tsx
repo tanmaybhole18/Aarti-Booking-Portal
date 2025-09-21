@@ -182,7 +182,7 @@ export default function BookingForm({ slotId }: BookingFormProps) {
                     ? 'border-green-400 bg-green-50' 
                     : 'border-gray-200'
               }`}
-              placeholder="e.g., A-101, B-205, 000 (Mandal Aarti)"
+              placeholder="e.g., 101, 205, 000 (Mandal Aarti)"
             />
             <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
               {flat.length >= 2 && !flatError ? (
