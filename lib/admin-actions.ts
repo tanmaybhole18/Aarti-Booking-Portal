@@ -39,6 +39,35 @@ export async function updateBooking(bookingId: string, formData: {
   phone: string
 }) {
   try {
+    // Get the current booking to check the slot date
+    const currentBooking = await prisma.booking.findUnique({
+      where: { id: bookingId },
+      include: { slot: true }
+    })
+
+    if (!currentBooking) {
+      return { success: false, error: 'Booking not found' }
+    }
+
+    // Check for duplicate flat number (except 000 for Mandal Aarti)
+    if (formData.flat !== '000') {
+      const existingBooking = await prisma.booking.findFirst({
+        where: {
+          flat: formData.flat,
+          slot: {
+            date: currentBooking.slot.date
+          },
+          id: {
+            not: bookingId // Exclude current booking
+          }
+        }
+      })
+
+      if (existingBooking) {
+        return { success: false, error: `Flat ${formData.flat} is already booked for this date. Use 000 for Mandal Aarti.` }
+      }
+    }
+
     // Update the booking
     const updatedBooking = await prisma.booking.update({
       where: { id: bookingId },

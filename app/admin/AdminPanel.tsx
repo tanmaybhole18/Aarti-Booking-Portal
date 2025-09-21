@@ -83,6 +83,12 @@ export default function AdminPanel({ slots }: AdminPanelProps) {
       return
     }
 
+    // Validate flat number (basic check - server will do detailed validation)
+    if (editForm.flat.trim() === '') {
+      alert('Please enter a valid flat number')
+      return
+    }
+
     setIsUpdating(bookingId)
     try {
       const result = await updateBooking(bookingId, editForm)

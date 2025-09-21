@@ -141,8 +141,8 @@ export default function BookingForm({ slotId }: BookingFormProps) {
         </div>
 
         <div>
-          <label htmlFor="flat" className="block text-sm font-semibold text-gray-900 mb-3">
-            Flat Number *
+          <label htmlFor="flat" className="block text-sm font-bold text-gray-900 mb-3">
+            Flat Number * <span className="text-xs text-gray-500">(Use 000 for Mandal Aarti)</span>
           </label>
           <div className="relative">
             <input
@@ -206,9 +206,9 @@ export default function BookingForm({ slotId }: BookingFormProps) {
       <div className="pt-6">
         <button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || phone.length !== 10}
           className={`group relative w-full py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-300 ${
-            isSubmitting
+            isSubmitting || phone.length !== 10
               ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
               : 'bg-gradient-to-r from-orange-600 to-red-600 text-white hover:from-orange-700 hover:to-red-700 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]'
           }`}
@@ -227,6 +227,11 @@ export default function BookingForm({ slotId }: BookingFormProps) {
             </div>
           )}
         </button>
+        {phone.length !== 10 && (
+          <p className="text-sm text-gray-500 mt-2 text-center">
+            Complete phone number to enable booking
+          </p>
+        )}
       </div>
 
       <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl p-6 text-center">
