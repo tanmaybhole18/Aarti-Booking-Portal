@@ -64,7 +64,7 @@ export default async function Home() {
                 || Jai Mata Di ||
               </p>
               <div className="flex justify-center mb-3">
-                <Image
+        <Image
                   src="/UtsavAnand.svg"
                   alt="Utsavanand"
                   width={350}

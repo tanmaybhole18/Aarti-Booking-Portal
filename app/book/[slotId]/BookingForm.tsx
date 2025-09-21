@@ -131,15 +131,19 @@ export default function BookingForm({ slotId }: BookingFormProps) {
   }
 
   return (
-    <form action={handleSubmit} className="space-y-8">
-      {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-xl flex items-center gap-3">
-          <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span className="font-medium">{error}</span>
-        </div>
-      )}
+    <form onSubmit={(e) => {
+      e.preventDefault()
+      const formData = new FormData(e.currentTarget)
+      handleSubmit(formData)
+    }} className="space-y-8">
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-xl flex items-center gap-3">
+            <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span className="font-medium">{error}</span>
+          </div>
+        )}
 
       <div className="space-y-6">
         <div>
@@ -261,8 +265,11 @@ export default function BookingForm({ slotId }: BookingFormProps) {
         >
           {isSubmitting ? (
             <div className="flex items-center justify-center gap-3">
-              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-              <span>Processing Booking...</span>
+              <div className="relative">
+                <div className="w-6 h-6 border-3 border-white/30 border-t-white rounded-full animate-spin"></div>
+                <div className="absolute inset-0 w-6 h-6 border-3 border-transparent border-t-white/60 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '0.8s' }}></div>
+              </div>
+              <span className="font-medium">Booking Slot...</span>
             </div>
           ) : (
             <div className="flex items-center justify-center gap-3">
@@ -291,10 +298,12 @@ export default function BookingForm({ slotId }: BookingFormProps) {
           <span className="text-sm font-semibold text-gray-700">Important Information</span>
         </div>
         <div className="text-sm text-gray-600 space-y-1">
-          <p>• By booking this slot, you agree to attend the Aarti session at the scheduled time</p>
+        
           <p>• This is a first-come-first-serve booking system</p>
           <p>• <strong>One flat can only book one aarti</strong> (except 000 for Mandal Aarti)</p>
-          <p>• Please arrive 10 minutes before the scheduled time</p>
+          <p>• Please be punctual</p>
+         <hr className="max-w-md mx-auto"/>
+          <p className='font-semibold'> Team UtsavAnand 💖</p>
         </div>
       </div>
     </form>

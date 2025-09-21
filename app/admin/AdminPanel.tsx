@@ -328,8 +328,8 @@ export default function AdminPanel({ slots }: AdminPanelProps) {
                             >
                               {isUpdating === booking.id ? (
                                 <>
-                                  <div className="w-3 h-3 border border-green-400 border-t-transparent rounded-full animate-spin"></div>
-                                  Saving...
+                                  <div className="w-3 h-3 border-2 border-green-400 border-t-transparent rounded-full animate-spin"></div>
+                                  <span className="font-medium">Saving...</span>
                                 </>
                               ) : (
                                 <>
@@ -368,8 +368,8 @@ export default function AdminPanel({ slots }: AdminPanelProps) {
                             >
                               {isDeleting === booking.id ? (
                                 <>
-                                  <div className="w-3 h-3 border border-red-400 border-t-transparent rounded-full animate-spin"></div>
-                                  Deleting...
+                                  <div className="w-3 h-3 border-2 border-red-400 border-t-transparent rounded-full animate-spin"></div>
+                                  <span className="font-medium">Deleting...</span>
                                 </>
                               ) : (
                                 <>
