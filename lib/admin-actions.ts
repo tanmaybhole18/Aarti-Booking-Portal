@@ -5,10 +5,14 @@ import { revalidatePath } from 'next/cache'
 
 export async function deleteBooking(bookingId: string) {
   try {
+    console.log('Attempting to delete booking:', bookingId)
+    
     // Delete the booking
     await prisma.booking.delete({
       where: { id: bookingId }
     })
+
+    console.log('Booking deleted successfully')
 
     // Revalidate relevant pages
     revalidatePath('/')
@@ -18,7 +22,14 @@ export async function deleteBooking(bookingId: string) {
     return { success: true }
   } catch (error) {
     console.error('Error deleting booking:', error)
-    return { success: false, error: 'Failed to delete booking. Please try again.' }
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      bookingId
+    })
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : 'Failed to delete booking. Please try again.' 
+    }
   }
 }
 

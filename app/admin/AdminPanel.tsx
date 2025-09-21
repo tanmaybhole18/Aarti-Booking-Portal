@@ -43,8 +43,8 @@ export default function AdminPanel({ slots }: AdminPanelProps) {
       } else {
         alert('Failed to delete booking: ' + result.error)
       }
-            } catch {
-              alert('Error deleting booking')
+    } catch {
+      alert('Error deleting booking')
     } finally {
       setIsDeleting(null)
     }
@@ -80,8 +80,8 @@ export default function AdminPanel({ slots }: AdminPanelProps) {
       } else {
         alert('Failed to update booking: ' + result.error)
       }
-            } catch {
-              alert('Error updating booking')
+    } catch {
+      alert('Error updating booking')
     } finally {
       setIsUpdating(null)
     }
