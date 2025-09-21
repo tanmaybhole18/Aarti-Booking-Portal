@@ -6,15 +6,15 @@ export default async function ViewAartiPage() {
   const slots = await getAllSlots()
 
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return date.toLocaleDateString('en-GB', {
-      weekday: 'long',
-      day: '2-digit',
-      month: 'long',
-      year: 'numeric'
-    })
-  }
+  // const formatDate = (dateString: string) => {
+  //   const date = new Date(dateString)
+  //   return date.toLocaleDateString('en-GB', {
+  //     weekday: 'long',
+  //     day: '2-digit',
+  //     month: 'long',
+  //     year: 'numeric'
+  //   })
+  // }
 
 
   return (
