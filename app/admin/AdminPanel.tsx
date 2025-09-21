@@ -11,7 +11,6 @@ interface AdminPanelProps {
 export default function AdminPanel({ slots }: AdminPanelProps) {
   const [password, setPassword] = useState('')
   const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [selectedSlot, setSelectedSlot] = useState<SlotWithBookings | null>(null)
   const [isDeleting, setIsDeleting] = useState<string | null>(null)
   const [isEditing, setIsEditing] = useState<string | null>(null)
   const [editForm, setEditForm] = useState({
@@ -51,7 +50,12 @@ export default function AdminPanel({ slots }: AdminPanelProps) {
     }
   }
 
-  const handleEditBooking = (booking: any) => {
+  const handleEditBooking = (booking: {
+    id: string
+    name: string
+    flat: string
+    phone: string
+  }) => {
     setIsEditing(booking.id)
     setEditForm({
       name: booking.name,
@@ -149,15 +153,6 @@ export default function AdminPanel({ slots }: AdminPanelProps) {
     })
   }
 
-  const formatBookingDate = (date: Date) => {
-    return date.toLocaleDateString('en-GB', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    })
-  }
 
   return (
     <div className="space-y-8">
@@ -286,7 +281,13 @@ export default function AdminPanel({ slots }: AdminPanelProps) {
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {formatBookingDate(booking.createdAt)}
+                      {new Date(booking.createdAt).toLocaleDateString('en-GB', {
+                        day: '2-digit',
+                        month: 'short',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       <div className="flex gap-2">

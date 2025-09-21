@@ -5,15 +5,6 @@ import Image from 'next/image'
 export default async function ViewAartiPage() {
   const slots = await getAllSlots()
 
-  // Flatten all bookings with slot information
-  const allBookings = slots.flatMap(slot => 
-    slot.bookings.map(booking => ({
-      ...booking,
-      slotDate: slot.date,
-      slotTime: slot.time,
-      slotCapacity: slot.capacity
-    }))
-  )
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
@@ -25,15 +16,6 @@ export default async function ViewAartiPage() {
     })
   }
 
-  const formatBookingDate = (date: Date) => {
-    return date.toLocaleDateString('en-GB', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    })
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-orange-50 to-red-50">
@@ -131,9 +113,21 @@ export default async function ViewAartiPage() {
                 }, [] as Array<{
                   date: string
                   day: string
-                  firstAarti: any[]
-                  secondAarti: any[]
-                }>).map((row, index) => (
+                  firstAarti: {
+                    id: string
+                    name: string
+                    flat: string
+                    phone: string
+                    createdAt: Date
+                  }[]
+                  secondAarti: {
+                    id: string
+                    name: string
+                    flat: string
+                    phone: string
+                    createdAt: Date
+                  }[]
+                }>).map((row) => (
                   <tr key={row.date} className="hover:bg-red-25 transition-colors">
                     <td className="px-4 py-3 text-center text-sm font-medium text-red-800 border-2 border-red-200">
                       {new Date(row.date).toLocaleDateString('en-GB', {
@@ -150,7 +144,7 @@ export default async function ViewAartiPage() {
                         <span className="text-gray-400 italic">Available</span>
                       ) : (
                         <div className="space-y-1">
-                          {row.firstAarti.map((booking, idx) => (
+                          {row.firstAarti.map((booking) => (
                             <div key={booking.id} className="font-medium">
                               {booking.flat} - {booking.name}
                             </div>
@@ -163,7 +157,7 @@ export default async function ViewAartiPage() {
                         <span className="text-gray-400 italic">Available</span>
                       ) : (
                         <div className="space-y-1">
-                          {row.secondAarti.map((booking, idx) => (
+                          {row.secondAarti.map((booking) => (
                             <div key={booking.id} className="font-medium">
                               {booking.flat} - {booking.name}
                             </div>
