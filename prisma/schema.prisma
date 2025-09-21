@@ -1,0 +1,33 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model AartiSlot {
+  id       String     @id @default(cuid())
+  date     String
+  time     String     // "First Aarti" / "Second Aarti"
+  bookings Booking[]  // one-to-many
+  capacity Int        @default(2)
+  @@unique([date, time], name: "date_time")
+}
+
+model Booking {
+  id        String   @id @default(cuid())
+  name      String
+  flat      String
+  phone     String
+  slot      AartiSlot @relation(fields: [slotId], references: [id])
+  slotId    String
+  createdAt DateTime @default(now())
+}
