@@ -12,7 +12,28 @@ export default function BookingForm({ slotId }: BookingFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
+  const [phone, setPhone] = useState('')
   const router = useRouter()
+
+  const formatPhoneNumber = (value: string): string => {
+    // Remove all non-digit characters
+    const phoneNumber = value.replace(/\D/g, '')
+    // Limit to 10 digits
+    const limitedPhone = phoneNumber.slice(0, 10)
+    return limitedPhone
+  }
+
+  const validatePhoneNumber = (phone: string): boolean => {
+    // Remove all non-digit characters
+    const cleanPhone = phone.replace(/\D/g, '')
+    // Check if it's exactly 10 digits
+    return cleanPhone.length === 10
+  }
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatPhoneNumber(e.target.value)
+    setPhone(formatted)
+  }
 
   const handleSubmit = async (formData: FormData) => {
     setIsSubmitting(true)
@@ -20,10 +41,28 @@ export default function BookingForm({ slotId }: BookingFormProps) {
     setSuccess(false)
 
     try {
+      const name = formData.get('name') as string
+      const flat = formData.get('flat') as string
+      const phone = formData.get('phone') as string
+
+      // Validate phone number
+      if (!validatePhoneNumber(phone)) {
+        setError('Please enter a valid 10-digit phone number')
+        setIsSubmitting(false)
+        return
+      }
+
+      // Basic validation
+      if (!name.trim() || !flat.trim() || !phone.trim()) {
+        setError('Please fill in all fields')
+        setIsSubmitting(false)
+        return
+      }
+
       const result = await bookSlot(slotId, {
-        name: formData.get('name') as string,
-        flat: formData.get('flat') as string,
-        phone: formData.get('phone') as string,
+        name: name.trim(),
+        flat: flat.trim(),
+        phone: phone.trim(),
       })
 
       if (result.success) {
@@ -124,23 +163,43 @@ export default function BookingForm({ slotId }: BookingFormProps) {
 
         <div>
           <label htmlFor="phone" className="block text-sm font-semibold text-gray-900 mb-3">
-            Phone Number *
+            Phone Number * <span className="text-sm text-gray-500">(10 digits)</span>
           </label>
           <div className="relative">
             <input
               type="tel"
               id="phone"
               name="phone"
+              value={phone}
+              onChange={handlePhoneChange}
               required
-              className="w-full px-4 py-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-all duration-200 bg-gray-50 focus:bg-white text-gray-900 placeholder-gray-500"
-              placeholder="Enter your phone number"
+              maxLength={10}
+              className={`w-full px-4 py-4 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-all duration-200 bg-gray-50 focus:bg-white text-gray-900 placeholder-gray-500 ${
+                phone.length > 0 && phone.length < 10 
+                  ? 'border-yellow-400 bg-yellow-50' 
+                  : phone.length === 10 
+                    ? 'border-green-400 bg-green-50' 
+                    : 'border-gray-200'
+              }`}
+              placeholder="9876543210"
             />
             <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-              <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-              </svg>
+              {phone.length === 10 ? (
+                <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              ) : (
+                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+              )}
             </div>
           </div>
+          {phone.length > 0 && phone.length < 10 && (
+            <p className="text-sm text-yellow-600 mt-2">
+              {10 - phone.length} more digits needed
+            </p>
+          )}
         </div>
       </div>
 

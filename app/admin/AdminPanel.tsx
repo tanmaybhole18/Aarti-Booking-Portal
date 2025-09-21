@@ -64,9 +64,22 @@ export default function AdminPanel({ slots }: AdminPanelProps) {
     })
   }
 
+  const validatePhoneNumber = (phone: string): boolean => {
+    // Remove all non-digit characters
+    const cleanPhone = phone.replace(/\D/g, '')
+    // Check if it's exactly 10 digits
+    return cleanPhone.length === 10
+  }
+
   const handleUpdateBooking = async (bookingId: string) => {
     if (!editForm.name || !editForm.flat || !editForm.phone) {
       alert('Please fill in all fields')
+      return
+    }
+
+    // Validate phone number
+    if (!validatePhoneNumber(editForm.phone)) {
+      alert('Please enter a valid 10-digit phone number')
       return
     }
 
@@ -263,10 +276,19 @@ export default function AdminPanel({ slots }: AdminPanelProps) {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                       {isEditing === booking.id ? (
                         <input
-                          type="text"
+                          type="tel"
                           value={editForm.phone}
-                          onChange={(e) => setEditForm({...editForm, phone: e.target.value})}
-                          className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                          onChange={(e) => {
+                            const formatted = e.target.value.replace(/\D/g, '').slice(0, 10)
+                            setEditForm({...editForm, phone: formatted})
+                          }}
+                          maxLength={10}
+                          className={`w-full px-2 py-1 border rounded text-sm ${
+                            editForm.phone.length === 10 
+                              ? 'border-green-400 bg-green-50' 
+                              : 'border-gray-300'
+                          }`}
+                          placeholder="9876543210"
                         />
                       ) : (
                         booking.phone

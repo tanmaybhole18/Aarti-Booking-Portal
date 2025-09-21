@@ -30,6 +30,12 @@ export async function getAllSlots(): Promise<SlotWithBookings[]> {
       ]
     })
     console.log('Fetched slots:', slots.length)
+    console.log('Slots with bookings:', slots.filter(slot => slot.bookings.length > 0).length)
+    slots.forEach(slot => {
+      if (slot.bookings.length > 0) {
+        console.log(`Slot ${slot.date} ${slot.time}:`, slot.bookings.map(b => `${b.name} (${b.flat})`))
+      }
+    })
     return slots
   } catch (error) {
     console.error('Error fetching slots:', error)
@@ -82,6 +88,7 @@ export async function bookSlot(
     }
 
     // Create booking
+    console.log('Creating booking for slot:', slotId, 'with data:', formData)
     const booking = await prisma.booking.create({
       data: {
         name: formData.name,
@@ -90,9 +97,12 @@ export async function bookSlot(
         slotId: slotId
       }
     })
+    console.log('Booking created successfully:', booking.id)
 
-    // Revalidate the homepage to show updated slot status
+    // Revalidate all relevant pages to show updated slot status
     revalidatePath('/')
+    revalidatePath('/view-aarti')
+    revalidatePath('/admin')
     revalidatePath(`/book/${slotId}`)
 
     return { success: true, booking }
