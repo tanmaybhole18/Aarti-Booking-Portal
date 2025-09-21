@@ -4,7 +4,9 @@ import { getAllSlots } from "@/lib/actions";
 import AvailableSlotsModal from "@/app/AvailableSlotsModal";
 
 export default async function Home() {
+  console.log('Homepage: Fetching slots...')
   const slots = await getAllSlots();
+  console.log('Homepage: Received slots:', slots.length)
 
   // Group slots by date
   const slotsByDate = slots.reduce((acc, slot) => {
@@ -14,6 +16,8 @@ export default async function Home() {
     acc[slot.date].push(slot);
     return acc;
   }, {} as Record<string, typeof slots>);
+  
+  console.log('Homepage: Grouped slots by date:', Object.keys(slotsByDate).length, 'dates')
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);

@@ -19,6 +19,7 @@ export interface SlotWithBookings {
 
 export async function getAllSlots(): Promise<SlotWithBookings[]> {
   try {
+    console.log('Fetching slots from database...')
     const slots = await prisma.aartiSlot.findMany({
       include: {
         bookings: true
@@ -28,10 +29,16 @@ export async function getAllSlots(): Promise<SlotWithBookings[]> {
         { time: 'asc' }
       ]
     })
+    console.log('Fetched slots:', slots.length)
     return slots
   } catch (error) {
     console.error('Error fetching slots:', error)
-    throw new Error('Failed to fetch slots')
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      name: error instanceof Error ? error.name : 'Unknown'
+    })
+    // Return empty array instead of throwing to prevent page crash
+    return []
   }
 }
 
