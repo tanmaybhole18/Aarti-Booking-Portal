@@ -1,5 +1,6 @@
 import { notFound, redirect } from 'next/navigation'
-import { getSlotById, bookSlot } from '@/lib/actions'
+import Link from 'next/link'
+import { getSlotById } from '@/lib/actions'
 import BookingForm from '@/app/book/[slotId]/BookingForm'
 
 interface PageProps {
@@ -77,17 +78,17 @@ export default async function BookSlotPage({ params }: PageProps) {
           </div>
 
           {/* Back Link */}
-          <div className="text-center mt-8">
-            <a
-              href="/"
-              className="inline-flex items-center gap-2 text-orange-600 hover:text-orange-700 font-medium transition-colors duration-200 group"
-            >
-              <svg className="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-              </svg>
-              Back to all slots
-            </a>
-          </div>
+                  <div className="text-center mt-8">
+                    <Link
+                      href="/"
+                      className="inline-flex items-center gap-2 text-orange-600 hover:text-orange-700 font-medium transition-colors duration-200 group"
+                    >
+                      <svg className="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                      </svg>
+                      Back to all slots
+                    </Link>
+                  </div>
         </div>
       </div>
     </div>
