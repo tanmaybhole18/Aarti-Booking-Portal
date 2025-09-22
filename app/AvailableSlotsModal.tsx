@@ -122,9 +122,7 @@ export default function AvailableSlotsModal({ slots }: AvailableSlotsModalProps)
                               </span>
                             </div>
                             
-                            <div className="text-sm text-gray-600 mb-4">
-                              🌆 Evening Aarti • {slot.time === 'First Aarti' ? '6:00 PM - 7:00 PM' : '7:00 PM - 8:00 PM'}
-                            </div>
+                           
 
                             {slot.bookings.length > 0 && (
                               <div className="mb-4">

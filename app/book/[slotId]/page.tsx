@@ -10,7 +10,8 @@ interface PageProps {
 }
 
 export default async function BookSlotPage({ params }: PageProps) {
-  const slot = await getSlotById(params.slotId)
+  const { slotId } = await params
+  const slot = await getSlotById(slotId)
 
   if (!slot) {
     notFound()

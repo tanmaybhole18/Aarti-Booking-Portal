@@ -14,7 +14,7 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   title: "Navratri Aarti Booking",
-  description: "Book your Navratri Aarti slots - Morning & Evening sessions from 22/09/2025 to 01/10/2025",
+  description: "Book your Navratri Aarti slots - from 22/09/2025 to 01/10/2025",
 };
 
 export default function RootLayout({
